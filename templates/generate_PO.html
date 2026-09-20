@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+    <div class="col-md-5">
+        <div class="card p-4">
+            <h4 class="fw-bold mb-3">Generate Purchase Order (PO)</h4>
+            <form method="POST">
+                <div class="mb-3">
+                    <label class="form-label">Select Vendor</label>
+                    <select name="vendor_id" class="form-select" required>
+                        <option value="">-- Choose Vendor --</option>
+                        {% for v in vendors %}
+                        <option value="{{ v.id }}">{{ v.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Select Product</label>
+                    <select name="product_id" class="form-select" required>
+                        <option value="">-- Choose Product --</option>
+                        {% for p in products %}
+                        <option value="{{ p.id }}">{{ p.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Quantity</label>
+                        <input type="number" id="qty" name="quantity" class="form-control" required min="1">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Unit Price (₹)</label>
+                        <input type="number" id="price" step="0.01" name="unit_price" class="form-control" required>
+                    </div>
+                </div>
+                <div class="alert alert-info py-2">
+                    Total Estimated: <strong id="totalDisplay">₹ 0.00</strong>
+                </div>
+                <button type="submit" class="btn btn-success w-100">Create & Issue PO</button>
+            </form>
+        </div>
+    </div>
+    <div class="col-md-7">
+        <div class="card p-4">
+            <h4 class="fw-bold mb-3">Generated Orders</h4>
+            <div class="table-responsive" style="max-height: 420px; overflow-y: auto;">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th>PO Number</th>
+                            <th>Vendor</th>
+                            <th>Qty</th>
+                            <th>Total Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for po in pos %}
+                        <tr>
+                            <td><span class="badge bg-dark">{{ po.po_number }}</span></td>
+                            <td>{{ po.vendor_name }}</td>
+                            <td>{{ po.quantity }}</td>
+                            <td>₹ {{ "%.2f"|format(po.total_amount) }}</td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="4" class="text-center text-muted">No PO generated yet.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const qty = document.getElementById('qty');
+const price = document.getElementById('price');
+const totalDisplay = document.getElementById('totalDisplay');
+
+function updateTotal() {
+    const q = parseFloat(qty.value) || 0;
+    const p = parseFloat(price.value) || 0;
+    totalDisplay.innerText = '₹ ' + (q * p).toFixed(2);
+}
+qty.addEventListener('input', updateTotal);
+price.addEventListener('input', updateTotal);
+</script>
+{% endblock %}

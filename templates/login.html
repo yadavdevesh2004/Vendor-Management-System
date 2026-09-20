@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-5">
+        <div class="card p-4 shadow-sm border-0">
+            <h3 class="text-center mb-4 fw-bold text-primary">Vendor Portal Login</h3>
+            <form method="POST" id="loginForm">
+                <div class="mb-3">
+                    <label class="form-label">Email or Username</label>
+                    <input type="text" name="login_input" class="form-control" placeholder="admin or admin@vms.com" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Password</label>
+                    <input type="password" id="password" name="password" class="form-control" placeholder="Min 8 chars, 1 special char (e.g. #)" required>
+                    <small class="text-muted">Requirement: Min 8 chars & 1 special symbol (e.g. #, @, $)</small>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 py-2">Sign In</button>
+            </form>
+            <div class="mt-3 text-center small text-muted">
+                Default Credentials: <b>admin</b> | <b>Admin@12345#</b>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+    const password = document.getElementById('password').value;
+    const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/;
+    if (password.length < 8) {
+        alert("Password must be at least 8 characters long.");
+        e.preventDefault();
+        return;
+    }
+    if (!specialCharRegex.test(password)) {
+        alert("Password must contain at least one special character like #, @, $ etc.");
+        e.preventDefault();
+        return;
+    }
+});
+</script>
+{% endblock %}

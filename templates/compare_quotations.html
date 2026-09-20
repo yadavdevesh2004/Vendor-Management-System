@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card p-4">
+    <h4 class="fw-bold mb-3">Compare Vendor Quotations</h4>
+    <form method="GET" class="row g-3 mb-4">
+        <div class="col-md-8">
+            <select name="product_id" class="form-select" required>
+                <option value="">-- Select Product to Compare Quotes --</option>
+                {% for p in products %}
+                <option value="{{ p.id }}" {% if selected_product == p.id|string %}selected{% endif %}>{{ p.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-4">
+            <button type="submit" class="btn btn-primary w-100">Compare</button>
+        </div>
+    </form>
+
+    {% if quotations %}
+    <div class="table-responsive">
+        <table class="table table-bordered align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Rank</th>
+                    <th>Vendor Name</th>
+                    <th>Product</th>
+                    <th>Quoted Price (₹)</th>
+                    <th>Delivery (Days)</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for q in quotations %}
+                <tr class="{% if loop.first %}table-success{% endif %}">
+                    <td>#{{ loop.index }}</td>
+                    <td><strong>{{ q.vendor_name }}</strong></td>
+                    <td>{{ q.product_name }}</td>
+                    <td>₹ {{ "%.2f"|format(q.quoted_price) }}</td>
+                    <td>{{ q.delivery_days }} Days</td>
+                    <td>
+                        {% if loop.first %}
+                            <span class="badge bg-success">Lowest Bid (Best Deal)</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Higher Bid</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% elif selected_product %}
+    <p class="text-muted">No quotations found for this product. Upload some quotations first.</p>
+    {% endif %}
+</div>
+{% endblock %}
