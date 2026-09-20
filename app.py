@@ -347,6 +347,5 @@ if __name__ == '__main__':
     init_db()
     app.run(debug=True)
 else:
-    # Render (Gunicorn) ke liye context ke saath DB initialize karein
-    with app.app_context():
-        init_db()
+    # Render (Gunicorn) uses app directly, so initialize DB on import
+    init_db()
